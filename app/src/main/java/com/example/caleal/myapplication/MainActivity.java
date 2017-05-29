@@ -1,6 +1,10 @@
 package com.example.caleal.myapplication;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +19,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     public int contador;
     TextView textoResultado;
 
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         contador=0;
         textoResultado=(TextView)findViewById(R.id.contadorTexto);
+        textoResultado.setText(""+contador);
+
 
         EventoTeclado teclado= new EventoTeclado();
 
@@ -33,6 +39,50 @@ public class MainActivity extends AppCompatActivity {
 
         n_reseteo.setOnEditorActionListener(teclado);
     }
+
+   /* public void onSaveInstanceState(Bundle estado) { //guardar datos en Bundle
+
+        estado.putInt("cuenta",contador);
+
+        super.onSaveInstanceState(estado);
+
+    }
+
+
+    public void onRestoreInstanceState(Bundle estado){
+
+        super.onRestoreInstanceState(estado);
+        contador=estado.getInt("cuenta");
+        textoResultado.setText(""+contador);
+
+    }*/
+
+
+   public void onPause(){
+
+       super.onPause();
+       SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+
+       SharedPreferences.Editor miEditor = datos.edit();
+
+       miEditor.putInt("cuenta",contador);
+       miEditor.apply();
+
+   }
+
+    public void onResume(){
+
+        super.onResume();
+
+        SharedPreferences datos = PreferenceManager.getDefaultSharedPreferences(this);
+
+        contador=datos.getInt("cuenta",0);
+
+        textoResultado.setText(""+contador);
+
+    }
+
+
 
     class EventoTeclado implements TextView.OnEditorActionListener{
         @Override
